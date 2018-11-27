@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Переводчик с кириллицы на латиницу</title>
+</head>
+<body>
+	<img src="logo.png" id="school">
+	<textarea id="txt1" class="txt1"></textarea><p class="v1">Вывод на латинице:</p>
+	<textarea id="txt2" class="txt2"></textarea><p class="v2">Ввод на кириллице:</p>
+	<button onclick="ok()">Перевести</button>
+	<p style="position: absolute; bottom: 20px; left: 20px; font-size: 15px">Краснобаев Никита©</p>
+	<p id="prog" style="position: absolute; bottom: 20px; right: 20px; font-size: 15px;">Перевод с кириллицы на латиницу®</p>
+
+
+	<script type="text/javascript">
+		
+	const x = document.getElementById('txt1');
+	const y = document.getElementById('txt2');
+	const btn = document.querySelector('button');
+
+	btn.onclick = () => {
+  	y.value = x.value.replace(/А/g, 'A').replace(/а/g, 'a').replace(/Ә/g, 'Á').replace(/ә/g, 'á').replace(/Б/g, 'B').replace(/б/g, 'b').replace(/В/g, 'V').replace(/в/g, 'v').replace(/Г/g, 'G').replace(/г/g, 'g').replace(/Ғ/g, 'Ǵ').replace(/ғ/g, 'ǵ').replace(/Д/g, 'D').replace(/д/g, 'd').replace(/Е/g, 'E').replace(/е/g, 'e').replace(/Ж/g, 'J').replace(/ж/g, 'j').replace(/З/g, 'Z').replace(/з/g, 'z').replace(/И/g, 'I').replace(/и/g, 'ı').replace(/Й/g, 'I').replace(/й/g, 'ı').replace(/К/g, 'K').replace(/к/g, 'k').replace(/Қ/g, 'Q').replace(/қ/g, 'q').replace(/Л/g, 'L').replace(/л/g, 'l').replace(/М/g, 'M').replace(/м/g, 'm').replace(/Н/g, 'N').replace(/н/g, 'n').replace(/Ң/g, 'Ń').replace(/ң/g, 'ń').replace(/О/g, 'O').replace(/о/g, 'o').replace(/Ө/g, 'Ó').replace(/ө/g, 'ó').replace(/П/g, 'P').replace(/п/g, 'p').replace(/Р/g, 'R').replace(/р/g, 'r').replace(/С/g, 'S').replace(/с/g, 's').replace(/Т/g, 'T').replace(/т/g, 't').replace(/У/g, 'Ý').replace(/у/g, 'ý').replace(/Ұ/g, 'U').replace(/ұ/g, 'u').replace(/Ү/g, 'Ú').replace(/ү/g, 'ú').replace(/Ф/g, 'F').replace(/ф/g, 'f').replace(/Х/g, 'H').replace(/х/g, 'h').replace(/Һ/g, 'H').replace(/һ/g, 'h').replace(/Ч/g, 'Ch').replace(/ч/g, 'ch').replace(/Ш/g, 'Sh').replace(/ш/g, 'sh').replace(/Ы/g, 'Y').replace(/ы/g, 'y').replace(/І/g, 'I').replace(/і/g, 'i');
+}
+
+	</script>
+</body>
+</html>
