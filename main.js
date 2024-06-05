@@ -187,12 +187,12 @@ function startGame(level) {
 				$('.leftCount').css('visibility', 'visible');
 				$('.rightCount').css('visibility', 'visible');
 
-				$('.leftCount span').text(collideCountP1);
-				$('.rightCount span').text(collideCountP2);
 
 				$('.toMenu').css('display', 'block');
 
 				function animate() {
+				$('.leftCount span').text(collideCountP1);
+				$('.rightCount span').text(collideCountP2);
 						requestAnimationFrame(animate);
 						world.step(1 / 40);
 
