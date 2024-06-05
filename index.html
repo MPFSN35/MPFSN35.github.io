@@ -1,29 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>Переводчик с кириллицы на латиницу</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="scripts/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/FBXLoader.js"></script> -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/MTLLoader.js"></script> -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/OBJLoader.js"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/libs/fflate.min.js"></script> -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/21.0.0/tween.umd.js" integrity="sha512-iPPs+A0ew4z+jybQ1r6HPj5b8zV8zaw6TpfGn/qqntA480gp6HDfUJGp1ni46LXrItwnTvYlg80h1NIkC4pf6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js" integrity="sha512-avLcnGxl5mqAX/wIKERdb1gFNkOLHh2W5JNCfJm5OugpEPBz7LNXJJ3BDjjwO00AxEY1MqdNjtEmiYhKC0ld7g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<title>ASYK ATU</title>
+
+	<style>
+		@font-face {
+			font-family: 'Bahnschrift';
+			src: '../fonts/Bahnschrift.ttf';
+		}
+
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+			font-family: 'Bahnschrift';
+		}
+
+		.menu {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		button {
+			display: block;
+			margin: 10px 0;
+			padding: 10px 0;
+			font-size: 16px;
+			width: 180px;
+		}
+
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0,0,0,0.4);
+		}
+
+		.modal-content {
+			background-color: #fefefe;
+			margin: 10% auto 0 auto;
+			padding: 20px;
+			border: 1px solid #888;
+			border-radius: 15px;
+			width: 60%;
+		}
+
+		.close {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
+
+		.close:hover,
+		.close:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		.levels {
+			display: flex;
+		}
+
+		.level {
+			margin-top: 15px;
+			margin-right: 15px;
+			cursor: pointer;
+			border: 1px solid rgba(0, 0, 0, .5);
+			border-radius: 15px 15px 0 0;
+		}
+
+		.levels img {
+			width: 150px;
+			height: 150px;
+			background-position: 50% 50%;
+			background-size: cover;
+			border-bottom: 1px solid rgba(0, 0, 0, .5);
+			border-radius: 15px 15px 0 0;
+		}
+
+		.level-title {
+			padding-left: 5px;
+		}
+
+		.leftCount, .rightCount {
+			position: absolute;
+			top: 15px;
+			font-size: 24px;
+			font-weight: bold;
+			visibility: hidden;
+		}
+
+		.leftCount {
+			left: 15px;
+			color: #ffff00;
+		}
+
+		.rightCount {
+			right: 15px;
+			color: #ff00ff;
+		}
+
+		button {
+			padding: 10px 20px;
+			font-size: 16px;
+			font-weight: bold;
+			text-transform: uppercase;
+			color: #ffffff;
+			background-color: #4CAF50;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		button.toMenu {
+			display: none;
+			width: 40px;
+			text-align: center;
+			padding-left: 0;
+			padding-right: 0;
+			position: absolute;
+			top: 40px;
+			left: 15px;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+
+		button:focus {
+			outline: none;
+		}
+
+		hr {
+			margin: 15px 0;
+		}
+
+		.difficulty-slider {
+			-webkit-appearance: none;
+			width: 100%;
+			height: 10px;
+			border-radius: 5px;
+			background: #d3d3d3;
+			outline: none;
+			opacity: 0.7;
+			-webkit-transition: .2s;
+			transition: opacity .2s;
+		}
+
+		.difficulty-slider:hover {
+			opacity: 1;
+		}
+
+		.difficulty-slider::-webkit-slider-thumb {
+			-webkit-appearance: none;
+			appearance: none;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: #4CAF50;
+			cursor: pointer;
+		}
+
+		.difficulty-slider::-moz-range-thumb {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: #4CAF50;
+			cursor: pointer;
+		}
+	</style>
+
 </head>
-<body class="all">
-	<img src="logo.png" id="school">
-	<textarea id="txt1" class="txt1"></textarea><p class="v1">Вывод на латинице:</p>
-	<textarea id="txt2" class="txt2"></textarea><p class="v2">Ввод на кириллице:</p>
-	<button onclick="ok()">Перевести</button>
-	<p class="name" style="position: absolute; bottom: 20px; left: 20px; font-size: 15px">Краснобаев Никита©</p>
-	<p class="site" id="prog" style="position: absolute; bottom: 20px; right: 20px; font-size: 15px;">Перевод с кириллицы на латиницу®</p>
+<body>
 
+	<audio src="musics/level-1.mp3"></audio>
+	<div class="leftCount">Игрок 1: <span>0</span></div>
+	<div class="rightCount">Игрок 2: <span>0</span></div>
+	<button class="toMenu"><</button>
 
-	<script type="text/javascript">
-		
-	const x = document.getElementById('txt1');
-	const y = document.getElementById('txt2');
-	const btn = document.querySelector('button');
+	<div class="modal level-modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h3>Выберите уровень</h3>
+			<div class="levels">
+				<div class="level" data-level="1">
+					<img src="images/level-1.png" alt="">
+					<div class="level-title"><h3>Уровень 1</h3></div>
+				</div>
+				<div class="level" data-level="2">
+					<img src="images/level-2.png" alt="">
+					<div class="level-title"><h3>Уровень 2</h3></div>
+				</div>
+				<div class="level" data-level="3">
+					<img src="images/level-3.png" alt="">
+					<div class="level-title"><h3>Уровень 3</h3></div>
+				</div>
+			</div>
+			<hr>
+			<div class="difficulty-settings">
+				<h3 class="difficulty-label">Новичок</h3>
+				<input type="range" min="1" max="3" value="1" step="1" class="difficulty-slider">
+			</div>
+		</div>
+	</div>
 
-	btn.onclick = () => {
-  	y.value = x.value.replace(/А/g, 'A').replace(/а/g, 'a').replace(/Ә/g, 'Á').replace(/ә/g, 'á').replace(/Б/g, 'B').replace(/б/g, 'b').replace(/В/g, 'V').replace(/в/g, 'v').replace(/Г/g, 'G').replace(/г/g, 'g').replace(/Ғ/g, 'Ǵ').replace(/ғ/g, 'ǵ').replace(/Д/g, 'D').replace(/д/g, 'd').replace(/Е/g, 'E').replace(/е/g, 'e').replace(/Ж/g, 'J').replace(/ж/g, 'j').replace(/З/g, 'Z').replace(/з/g, 'z').replace(/И/g, 'I').replace(/и/g, 'ı').replace(/Й/g, 'I').replace(/й/g, 'ı').replace(/К/g, 'K').replace(/к/g, 'k').replace(/Қ/g, 'Q').replace(/қ/g, 'q').replace(/Л/g, 'L').replace(/л/g, 'l').replace(/М/g, 'M').replace(/м/g, 'm').replace(/Н/g, 'N').replace(/н/g, 'n').replace(/Ң/g, 'Ń').replace(/ң/g, 'ń').replace(/О/g, 'O').replace(/о/g, 'o').replace(/Ө/g, 'Ó').replace(/ө/g, 'ó').replace(/П/g, 'P').replace(/п/g, 'p').replace(/Р/g, 'R').replace(/р/g, 'r').replace(/С/g, 'S').replace(/с/g, 's').replace(/Т/g, 'T').replace(/т/g, 't').replace(/У/g, 'Ý').replace(/у/g, 'ý').replace(/Ұ/g, 'U').replace(/ұ/g, 'u').replace(/Ү/g, 'Ú').replace(/ү/g, 'ú').replace(/Ф/g, 'F').replace(/ф/g, 'f').replace(/Х/g, 'H').replace(/х/g, 'h').replace(/Һ/g, 'H').replace(/һ/g, 'h').replace(/Ч/g, 'Ch').replace(/ч/g, 'ch').replace(/Ш/g, 'Sh').replace(/ш/g, 'sh').replace(/Ы/g, 'Y').replace(/ы/g, 'y').replace(/І/g, 'I').replace(/і/g, 'i');
-}
+	<div class="main">
+		<div class="menu">
+			<button class="startButton">Начать игру</button>
+			<button class="multiplayerButton">Сетевая игра</button>
+			<button class="collectionButton">Коллекция</button>
+			<button class="historyButton">История</button>
+			<button class="langButton">Язык: русский</button>
+		</div>
+	</div>
 
-	</script>
+	<script src="main.js" type="module"></script>
+
 </body>
 </html>
