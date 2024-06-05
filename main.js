@@ -311,7 +311,7 @@ $(document).ready(() => {
 
 		// $('.level').click(function() {
 				// const level = $(this).attr('data-level');
-				startGame(level)
+				startGame(1)
 		// });
 
 		$('.toMenu').click(function() {
